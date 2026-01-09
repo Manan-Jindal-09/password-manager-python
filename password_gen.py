@@ -3,13 +3,13 @@ import string
 from cryptography.fernet import Fernet
 import os
 
-# ---------------- KEY MANAGEMENT ----------------
+
 def load_or_create_key():
     if not os.path.exists("secret.key"):
         key = Fernet.generate_key()
         with open("secret.key", "wb") as key_file:
             key_file.write(key)
-        print("Encryption key generated and saved.")
+        print("encryption key generated and saved.")
     else:
         key = open("secret.key", "rb").read()
     return key
@@ -17,7 +17,6 @@ def load_or_create_key():
 key = load_or_create_key()
 cipher = Fernet(key)
 
-# ---------------- PASSWORD GENERATOR ----------------
 def pass_gen(length):
     safe_symbols = "!@#$%^&*()_+-="
     characters = (
@@ -28,7 +27,6 @@ def pass_gen(length):
     )
     return ''.join(random.choice(characters) for _ in range(length))
 
-# ---------------- PASSWORD STRENGTH ----------------
 def check_strength(password):
     length = len(password)
     has_upper = any(c.isupper() for c in password)
@@ -45,14 +43,12 @@ def check_strength(password):
     else:
         return "Weak"
 
-# ---------------- ENCRYPT / DECRYPT ----------------
 def encrypt_password(password):
     return cipher.encrypt(password.encode())
 
 def decrypt_password(encrypted_password):
     return cipher.decrypt(encrypted_password).decode()
 
-# ---------------- SAVE PASSWORD ----------------
 def save_pass(website, username, password):
     encrypted = encrypt_password(password)
     with open("passwords_secure.txt", "ab") as file:
@@ -61,7 +57,6 @@ def save_pass(website, username, password):
         file.write(b"Password: " + encrypted + b"\n")
         file.write(b"-" * 30 + b"\n")
 
-# ---------------- VIEW PASSWORDS ----------------
 def view_passwords():
     with open("passwords_secure.txt", "rb") as file:
         for line in file:
@@ -72,7 +67,6 @@ def view_passwords():
             else:
                 print(line.decode().strip())
 
-# ---------------- MAIN ----------------
 print("Welcome to Password Generator")
 
 length = int(input("Enter password length: "))
